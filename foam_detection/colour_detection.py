@@ -41,7 +41,7 @@ def getEdges(image, blur):
                     [-1, 5,-1],
                     [0, -1, 0]], )
     image_sharp = cv2.filter2D(src=image, ddepth=-1, kernel=kernel)
-    cv2.imshow('sharpened image', image_sharp)
+    # cv2.imshow('sharpened image', image_sharp)
 
     # Apply Bilateral Blurring (to reduce noise while keeping edges sharp)
     # blurred = cv2.bilateralFilter(image_sharp, blur, 75, 75)
@@ -66,9 +66,9 @@ def findBestContour(canny, search_contour):
             best_fit_contour = c
             break
 
-    max_points = math.inf
+    max_points = -math.inf
     for c in contours:
-        if cv2.contourArea(c) > 0.05*canny.shape[1]**2:
+        if cv2.contourArea(c) > 0.1*canny.shape[1]**2:
 
             x,y,w,h = cv2.boundingRect(c)
 
@@ -83,19 +83,20 @@ def findBestContour(canny, search_contour):
                 cv2.fillPoly(contour_fill, pts=[c], color=255)
                 resized_mask = cv2.resize(search_contour, (w,h))
                 mask = np.zeros(canny.shape, dtype = "uint8")
-                mask[x:resized_mask.shape[0], y:resized_mask.shape[1]] = resized_mask
-                
+                mask[y:y+resized_mask.shape[0], x:x+resized_mask.shape[1]] = resized_mask
                 points = 0
                 for i in range(y, resized_mask.shape[0]):
                     for j in range(y, resized_mask.shape[1]):
                         if (mask[j][i] == 0 and contour_fill[j][i] == 0) or (mask[j][i] == 255 and contour_fill[j][i] == 255): 
                             points += 1
                         elif (mask[j][i] == 0 and contour_fill[j][i] == 255) or (mask[j][i] == 255 and contour_fill[j][i] == 0):
-                            points -=1
+                            points -=1  
+
                 if points > max_points:
                     best_fit_contour = c
-
-    return best_fit_contour
+                    box = [x, y, w, h]
+    
+    return best_fit_contour, box
 
 def colour_detection(image=None):
 
@@ -107,10 +108,10 @@ def colour_detection(image=None):
     cv2.imshow("original image", image)
 
     binary = toBinary(image)
-    cv2.imshow("binary", binary)
+    # cv2.imshow("binary", binary)
 
     canny = getEdges(image, 3)
-    cv2.imshow("canny", canny)
+    # cv2.imshow("canny", canny)
 
     lines = cv2.HoughLinesP(canny,rho = 1,theta = 1*np.pi/180,threshold = 100,minLineLength = 100,maxLineGap = 50)
 
@@ -123,27 +124,33 @@ def colour_detection(image=None):
         x2 = lines[i][0][2]
         y2 = lines[i][0][3]
         m = (y2-y1)/(x2-x1)
-        print(x1,y1,x2,y2)
         theta = np.arctan(m)*180/np.pi
         if theta >30 or theta <-30:
             x0 = x1-25
             y0 = np.round(m*(x0-x1)+y1).astype(int)
             x3 = x2+25
             y3 = np.round(m*(x3-x1)+y1).astype(int)
-            print(x0,y0,x3,y3)
             
             cv2.line(canny,(x0,y0),(x3,y3),255,2)
 
-    cv2.imshow("lines", canny)
+    # cv2.imshow("lines", canny)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     close = cv2.morphologyEx(canny, cv2.MORPH_CLOSE, kernel, iterations=1)
-    cv2.imshow("close", close)
 
+    contours, hierarchy = cv2.findContours(close, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    for c in contours:
+        cv2.fillPoly(close, pts=[c], color=255)
+
+    close = cv2.erode(close, kernel, iterations=2) 
+
+    # cv2.imshow("close", close)
+    
     search_contour = cv2.imread("foam_detection/images/object_mask.jpg", 0)
 
-    best_contour =  findBestContour(close, search_contour)
-    
+    best_contour, box =  findBestContour(close, search_contour)
+    x,y,w,h = box
+
     # bit mask and extract object
     mask = np.zeros(image.shape, dtype = "uint8")
     cv2.fillPoly(mask, pts=[best_contour], color=(255,255,255))
@@ -151,7 +158,21 @@ def colour_detection(image=None):
 
     cv2.imshow("masked", masked_image)
 
+    canny = getEdges(masked_image, 7)
+    # v2.imshow("canny", canny)    
 
+    for i in range(h):
+        if canny[y+h-i][x+(w//2)] == 255 and i>50:
+            liquid_height = i
+            break
+
+    liquid_colour = masked_image[y+h-(liquid_height//2)][x+(w//2)]
+    colour = np.zeros(image.shape, dtype = "uint8")
+    for i in range(colour.shape[0]):
+        for j in range(colour.shape[1]):
+            colour[i][j] = liquid_colour
+    
+    cv2.imshow("colour", colour)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
