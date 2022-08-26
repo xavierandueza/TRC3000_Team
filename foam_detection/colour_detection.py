@@ -66,33 +66,34 @@ def findBestContour(canny, search_contour):
             best_fit_contour = c
             break
 
-    min_area = math.inf
-    print(len(contours))
+    max_points = math.inf
     for c in contours:
-        if cv2.contourArea(c) > 0.1*canny.shape[1]**2:
-            # Fit contours into a rectangular box with minimum area
-            min_rect = cv2.minAreaRect(c)
+        if cv2.contourArea(c) > 0.05*canny.shape[1]**2:
 
-            # calculate box points
-            box = cv2.boxPoints(min_rect)
-            box = np.intp(box)
+            x,y,w,h = cv2.boundingRect(c)
 
             in_bounds = True
-            for i in range(len(box)):
-                for j in range(len(box[0])):
-                    if box[i][j] < 0:
-                        in_bounds = False
+            if x < 0 or y < 0 or x+w <0 or y+h <0:
+                in_bounds = False
+            if x > 768 or y>768 or x+w > 768 or y+h > 768:
+                in_bounds = False
 
             if in_bounds:
-                print(box)
-                # calculate area of rectangle
-                x = math.sqrt(((box[0][0] - box[1][0]) ** 2) + ((box[0][1] - box[1][1])) ** 2)
-                y = math.sqrt(((box[0][0] - box[3][0]) ** 2) + ((box[0][1] - box[3][1])) ** 2)
-                box_area = x*y
-
-                if (box_area - cv2.contourArea(c))/box_area < min_area:
+                contour_fill = np.zeros(canny.shape, dtype = "uint8")
+                cv2.fillPoly(contour_fill, pts=[c], color=255)
+                resized_mask = cv2.resize(search_contour, (w,h))
+                mask = np.zeros(canny.shape, dtype = "uint8")
+                mask[x:resized_mask.shape[0], y:resized_mask.shape[1]] = resized_mask
+                
+                points = 0
+                for i in range(y, resized_mask.shape[0]):
+                    for j in range(y, resized_mask.shape[1]):
+                        if (mask[j][i] == 0 and contour_fill[j][i] == 0) or (mask[j][i] == 255 and contour_fill[j][i] == 255): 
+                            points += 1
+                        elif (mask[j][i] == 0 and contour_fill[j][i] == 255) or (mask[j][i] == 255 and contour_fill[j][i] == 0):
+                            points -=1
+                if points > max_points:
                     best_fit_contour = c
-                    min_area = (box_area - cv2.contourArea(c))/box_area
 
     return best_fit_contour
 
@@ -111,32 +112,35 @@ def colour_detection(image=None):
     canny = getEdges(image, 3)
     cv2.imshow("canny", canny)
 
-    lines = cv2.HoughLines(canny,1,np.pi/180,130)
+    lines = cv2.HoughLinesP(canny,rho = 1,theta = 1*np.pi/180,threshold = 100,minLineLength = 100,maxLineGap = 50)
+
 
     # Draw the lines
-    if lines is not None:
-        for i in range(0, len(lines)):
-            rho = lines[i][0][0]
-            theta = lines[i][0][1]
-            theta_deg =theta*180/np.pi
-            if theta_deg < 60 or theta_deg > 150: 
-                print(theta_deg)
-                a = math.cos(theta)
-                b = math.sin(theta)
-                x0 = a * rho
-                y0 = b * rho
-                pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
-                pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
-                cv2.line(canny, pt1, pt2, (255,255,255), 2, cv2.LINE_AA)
+    N = lines.shape[0]
+    for i in range(N):
+        x1 = lines[i][0][0]
+        y1 = lines[i][0][1]    
+        x2 = lines[i][0][2]
+        y2 = lines[i][0][3]
+        m = (y2-y1)/(x2-x1)
+        print(x1,y1,x2,y2)
+        theta = np.arctan(m)*180/np.pi
+        if theta >30 or theta <-30:
+            x0 = x1-25
+            y0 = np.round(m*(x0-x1)+y1).astype(int)
+            x3 = x2+25
+            y3 = np.round(m*(x3-x1)+y1).astype(int)
+            print(x0,y0,x3,y3)
+            
+            cv2.line(canny,(x0,y0),(x3,y3),255,2)
 
     cv2.imshow("lines", canny)
-    cv2.imwrite("outline.jpg", canny)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     close = cv2.morphologyEx(canny, cv2.MORPH_CLOSE, kernel, iterations=1)
     cv2.imshow("close", close)
 
-    search_contour = cv2.imread("foam_detection/images/contour/outline.jpg")
+    search_contour = cv2.imread("foam_detection/images/object_mask.jpg", 0)
 
     best_contour =  findBestContour(close, search_contour)
     

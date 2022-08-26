@@ -30,55 +30,11 @@ def rescaleFrame(frame, scale):
     return cv2.resize(frame, dimensions, interpolation=cv2.INTER_CUBIC)
 
 
-image = cv2.imread("foam_detection/images/contour/contour_paint_thick.jpg")
-image = cv2.resize(image, (768, 768), interpolation=cv2.INTER_CUBIC)
-img = np.zeros(image.shape, dtype = "uint8")
+image = cv2.imread("./object_mask.jpg", 0)
 
-for i in range(image.shape[0]):
-    for j in range(image.shape[1]):
-        if image[i][j][0] == 255 or image[i][j][1] == 255 or image[i][j][2] == 255:
-            img[i][j] = [255, 255, 255] 
-
-# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-# thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-
-canny_edges = cv2.Canny(img, 0, 0)
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
-close = cv2.morphologyEx(canny_edges, cv2.MORPH_CLOSE, kernel, iterations=1)
-
-
-contours, hierarchy = cv2.findContours(close, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-contours = sorted(contours, key =cv2.contourArea)
-
-
-output_img = np.zeros(img.shape, dtype = "uint8")
-cv2.fillPoly(output_img, pts =contours[-1], color=(255,255,255))
-canny_edges = cv2.Canny(output_img, 0, 0)
-
-
-contours, hierarchy = cv2.findContours(canny_edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-for i in range(len(contours)):
-    cv2.fillPoly(output_img, pts =contours[i], color=(255,255,255))
-
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (11, 11))
-close = cv2.morphologyEx(output_img, cv2.MORPH_OPEN, kernel, iterations=5)
-
-canny_edges = cv2.Canny(close, 0, 0)
-contours, hierarchy = cv2.findContours(canny_edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-for i in range(len(contours)):
-    cv2.fillPoly(output_img, pts =contours[i], color=(255,255,255))
-
-cv2.imwrite("object_mask.jpg", output_img)
-
-# canny = getEdges(image, 3)
-# canny1 = rescaleFrame(canny, 0.2)
-# contours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-# cv2.imshow("canny", canny1)
-# cv2.waitKey(0)
-
-# img = np.zeros(image.shape)
-# cv2.fillPoly(img, pts =[sorted(contours)[1]], color=(255,255,255))
-cv2.imshow("img", output_img)
+thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY+ cv2.THRESH_OTSU)[1]
+cv2.imshow("img", thresh)
+cv2.imwrite("object_mask.jpg", thresh)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
