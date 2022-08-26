@@ -89,9 +89,7 @@ def findBestContour(canny, search_contour):
                     for j in range(y, resized_mask.shape[1]):
                         if (mask[j][i] == 0 and contour_fill[j][i] == 0) or (mask[j][i] == 255 and contour_fill[j][i] == 255): 
                             points += 1
-                        elif (mask[j][i] == 0 and contour_fill[j][i] == 255) or (mask[j][i] == 255 and contour_fill[j][i] == 0):
-                            points -=1  
-
+                points = points/cv2.contourArea(c)
                 if points > max_points:
                     best_fit_contour = c
                     box = [x, y, w, h]
@@ -126,9 +124,9 @@ def colour_detection(image=None):
         m = (y2-y1)/(x2-x1)
         theta = np.arctan(m)*180/np.pi
         if theta >30 or theta <-30:
-            x0 = x1-25
+            x0 = x1-40
             y0 = np.round(m*(x0-x1)+y1).astype(int)
-            x3 = x2+25
+            x3 = x2+40
             y3 = np.round(m*(x3-x1)+y1).astype(int)
             
             cv2.line(canny,(x0,y0),(x3,y3),255,2)
@@ -142,7 +140,7 @@ def colour_detection(image=None):
     for c in contours:
         cv2.fillPoly(close, pts=[c], color=255)
 
-    close = cv2.erode(close, kernel, iterations=2) 
+    close = cv2.erode(close, kernel, iterations=4) 
 
     # cv2.imshow("close", close)
     
@@ -159,10 +157,10 @@ def colour_detection(image=None):
     cv2.imshow("masked", masked_image)
 
     canny = getEdges(masked_image, 7)
-    # v2.imshow("canny", canny)    
+    cv2.imshow("canny", canny)    
 
     for i in range(h):
-        if canny[y+h-i][x+(w//2)] == 255 and i>50:
+        if canny[y+h-(i+1)][canny.shape[1]//2] == 255 and i>50:
             liquid_height = i
             break
 
