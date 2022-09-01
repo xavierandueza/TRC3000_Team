@@ -84,10 +84,15 @@ def findBestContour(canny, search_contour):
                 resized_mask = cv2.resize(search_contour, (w,h))
                 mask = np.zeros(canny.shape, dtype = "uint8")
                 mask[y:y+resized_mask.shape[0], x:x+resized_mask.shape[1]] = resized_mask
+
+                cv2.imshow("mask",mask)
+                cv2.waitKey(0)
+
                 points = 0
                 for i in range(y, resized_mask.shape[0]):
                     for j in range(y, resized_mask.shape[1]):
-                        if (mask[j][i] == 0 and contour_fill[j][i] == 0) or (mask[j][i] == 255 and contour_fill[j][i] == 255): 
+                        # print(resized_mask.shape[0], resized_mask.shape[1], mask.shape, contour_fill.shape)
+                        if (mask[i][j] == 0 and contour_fill[i][j] == 0) or (mask[i][j] == 255 and contour_fill[i][j] == 255): 
                             points += 1
                 points = points/cv2.contourArea(c)
                 if points > max_points:
@@ -98,7 +103,7 @@ def findBestContour(canny, search_contour):
 
 def colour_detection(image=None):
 
-    image = cv2.imread("foam_detection/images/2.jpg")
+    image = cv2.imread("foam_detection/images/2_yellow.jpg")
     
     scale = 768/max(image.shape[0],image.shape[1])
     image = rescaleFrame(image, scale)
@@ -156,7 +161,7 @@ def colour_detection(image=None):
 
     cv2.imshow("masked", masked_image)
 
-    canny = getEdges(masked_image, 7)
+    canny = getEdges(masked_image, 3)
     cv2.imshow("canny", canny)    
 
     for i in range(h):
