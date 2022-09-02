@@ -103,7 +103,7 @@ def findBestContour(canny, search_contour):
 
 def colour_detection(image=None):
 
-    image = cv2.imread("foam_detection/images/2_yellow.jpg")
+    image = cv2.imread("foam_detection/images/2.jpg")
     
     scale = 768/max(image.shape[0],image.shape[1])
     image = rescaleFrame(image, scale)
@@ -114,7 +114,8 @@ def colour_detection(image=None):
     # cv2.imshow("binary", binary)
 
     canny = getEdges(image, 3)
-    # cv2.imshow("canny", canny)
+    cv2.imshow("canny", canny)
+    cv2.waitKey(0)
 
     lines = cv2.HoughLinesP(canny,rho = 1,theta = 1*np.pi/180,threshold = 100,minLineLength = 100,maxLineGap = 50)
 
@@ -159,21 +160,34 @@ def colour_detection(image=None):
     cv2.fillPoly(mask, pts=[best_contour], color=(255,255,255))
     masked_image = cv2.bitwise_and(image, mask)
 
-    cv2.imshow("masked", masked_image)
-
     canny = getEdges(masked_image, 3)
     cv2.imshow("canny", canny)    
 
+    getting_liquid = True
     for i in range(h):
         if canny[y+h-(i+1)][canny.shape[1]//2] == 255 and i>50:
-            liquid_height = i
-            break
+            if getting_liquid:
+                liquid_height = i
+                getting_liquid = False
+            else:
+                foam_height = i
+                break
+    
 
     liquid_colour = masked_image[y+h-(liquid_height//2)][x+(w//2)]
     colour = np.zeros(image.shape, dtype = "uint8")
     for i in range(colour.shape[0]):
         for j in range(colour.shape[1]):
             colour[i][j] = liquid_colour
+    
+    cv2.line(masked_image, (x+(w//2), y+h-(liquid_height)), (x+(w//2),y+h), (0, 0, 255), 2) 
+    string = "height in pixels: " + str(liquid_height)
+
+    cv2.putText(masked_image,string, (x+(w//2)+3,y+h-(liquid_height//2)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+
+
+    cv2.imshow("masked", masked_image)
+
     
     cv2.imshow("colour", colour)
     cv2.waitKey(0)
