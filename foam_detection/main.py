@@ -47,11 +47,10 @@ def main(image=None):
     string = "height in pixels: " + str(liquid_height)
     cv2.putText(masked_image,string, (x+(w//2)+3,y+h-(liquid_height//2)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
     cv2.imshow("masked", masked_image)
-
-    
     
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-colour_detection()
+if __name__ == "__main__":
+    main()
 
