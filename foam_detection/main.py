@@ -7,7 +7,7 @@ from utils.extractFlask import extractFlask
 from utils.getDigestateInfo import getDigestateInfo
 
 
-def colour_detection(image=None):
+def main(image=None):
 
     # Reading the image (this usually will not be needed if an image is passed into this function)
     image = cv2.imread("foam_detection/images/2.jpg")
