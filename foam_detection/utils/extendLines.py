@@ -2,6 +2,13 @@ import cv2
 import numpy as np
 
 def extendLines(canny):
+    """
+    Function that finds any straight lines in an image and draws an extended white line over it.
+    (purpose is to fill any gaps in edge contours of our flask)
+    
+    :param canny: The image to find the lines on
+    :returns: image with the extended lines drawn
+    """
     # Finding any lines in the canny edge image using HoughLines transform
     lines = cv2.HoughLinesP(canny,rho = 1,theta = 1*np.pi/180,threshold = 100,minLineLength = 100,maxLineGap = 50)
 

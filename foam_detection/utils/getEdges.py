@@ -2,6 +2,17 @@ import cv2
 import numpy as np
 
 def getEdges(image, blur):
+    """
+    function to get the canny edges of an image after applying shapening and blurring.
+
+    :param image: image to find the edges
+    :param blur: odd number for the blur kernel
+    :returns: the edges from the image
+    
+    """
+    if blur%2 == 0:
+        raise Exception("Blur must be odd integer")
+
     kernel = np.array([[0, -1, 0],
                     [-1, 5,-1],
                     [0, -1, 0]], )

@@ -4,10 +4,11 @@ import math
 
 def findBestContour(canny, search_contour):
     """
-    Function to find the contours in the closed binary image that best fit the shape of a pipe (rectangle)
+    Function to find the contour that best fits the shape of the search_contour. (flask)
 
-    :param closed_bianry: Binary image that has undergone closing and opening morphological operations
-    :returns: large contour that best fits a rectangular shape
+    :param canny: binary image of the edges of the image
+    :returns best_fit_contour: the contour that best fits the shape of the flask
+    :returns box: contains [x, y, w, h] coords of the bounding box of the flask
     """
     # Use the canny edges to list out the contours
     contours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)

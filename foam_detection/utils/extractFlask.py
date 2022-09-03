@@ -4,6 +4,14 @@ from utils.findBestContour import findBestContour
 from utils.extendLines import extendLines
 
 def extractFlask(image, canny):
+    """
+    This function extracts the flask from the image given canny edges, after perfoming
+    different morphological operations
+    :param image: coloured image containing flask
+    :param canny: binary image of the canny edges
+    :returns masked_image: image of the extract flask
+    :returns box: contains [x, y, w, h] coords of the bounding box of the flask
+    """
     # Extend any straight lines in the canny edges image to fill big gaps of the contour
     canny = extendLines(canny)
 

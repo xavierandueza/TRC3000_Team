@@ -1,4 +1,14 @@
 def getDigestateInfo(image, canny, box):
+    """
+    Function to get various info on the digestate sample.
+
+    :param image: image of sample
+    :param canny: canny edges of the sample
+    :param box: bounding box coordinates of the flask
+    :returns: a dictionary containing various information of the sample
+    
+    """
+
     x,y,w,h = box
     getting_liquid = True
     for i in range(h):
