@@ -10,7 +10,7 @@ from utils.getDigestateInfo import getDigestateInfo
 def main(image=None):
 
     # Reading the image (this usually will not be needed if an image is passed into this function)
-    image = cv2.imread("foam_detection/images/2.jpg")
+    image = cv2.imread("foam_detection/images/3.jpg")
     
     # Rescaling the image to be maximum size of (768x768)
     scale = 768/max(image.shape[0],image.shape[1])

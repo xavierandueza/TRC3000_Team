@@ -21,15 +21,31 @@ def extendLines(canny):
         y2 = lines[i][0][3]
 
         # Finding the angle of the lines
-        m = (y2-y1)/(x2-x1)
-        theta = np.arctan(m)*180/np.pi
+        if x2 == x1:
+            theta = 90
+        else:
+            m = (y2-y1)/(x2-x1)
+            theta_rad = np.arctan(m)
+            theta = theta_rad *180/np.pi
+
+        # calculate the length to extend by
+        length = np.sqrt((x2-x1)**2 + (y2-y1)**2)
+        length_to_extend = 0.39*length
 
         # Only keeping the lines that are not flat so we don't get the table
         if theta >30 or theta <-30:
-            x0 = x1-40
-            y0 = np.round(m*(x0-x1)+y1).astype(int)
-            x3 = x2+40
-            y3 = np.round(m*(x3-x1)+y1).astype(int)
+            # calculating coordinates of lines after extension
+            if theta != 90:
+                x0 = np.round(x1-length_to_extend*np.cos(theta_rad)).astype(int)
+                x3 = np.round(x2+length_to_extend*np.cos(theta_rad)).astype(int)
+                y0 = np.round(y1-length_to_extend*np.sin(theta_rad)).astype(int)
+                y3 = np.round(y2+length_to_extend*np.sin(theta_rad)).astype(int)
+            else:
+                x0 = x1
+                x3 = x2
+                y0 = np.round(y1-length_to_extend).astype(int)
+                y3 = np.round(y2+length_to_extend).astype(int)
+
             # Drawing the lines onto the image
             cv2.line(canny,(x0,y0),(x3,y3),255,2)
     return canny
