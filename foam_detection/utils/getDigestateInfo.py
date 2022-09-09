@@ -1,4 +1,7 @@
-def getDigestateInfo(image, canny, box):
+from utils.getEdges import getEdges
+import cv2
+
+def getDigestateInfo(image, box):
     """
     Function to get various info on the digestate sample.
 
@@ -8,7 +11,8 @@ def getDigestateInfo(image, canny, box):
     :returns: a dictionary containing various information of the sample
     
     """
-
+    canny = getEdges(image, 3)
+    cv2.imshow("edges for digestate info", canny)
     x,y,w,h = box
     getting_liquid = True
     for i in range(h):
