@@ -24,16 +24,19 @@ def extractFlask(image, canny):
     contours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     for c in contours:
          cv2.fillPoly(canny_filled, pts=[c], color=255)
+     
+    cv2.imshow("close", canny_filled)
+    cv2.waitKey(0)
     # then eroding any external thin line contours
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
-    close = cv2.erode(canny_filled, kernel, iterations=4)
-    close = cv2.dilate(close, kernel, iterations=4)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    close = cv2.erode(canny_filled, kernel, iterations=2)
+    close = cv2.dilate(close, kernel, iterations=2)
 
     # bit mask and extract flask object from the original image
     masked_edges = cv2.bitwise_and(canny, close)
     masked_edges = cv2.morphologyEx(masked_edges, cv2.MORPH_CLOSE, kernel, iterations=3)
 
-
+    cv2.imshow("close", close)
     cv2.imshow("canny_ex", canny)
     cv2.imshow("masked_edges", masked_edges)
     cv2.waitKey(0)

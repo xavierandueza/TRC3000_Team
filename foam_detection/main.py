@@ -10,7 +10,7 @@ from utils.getDigestateInfo import getDigestateInfo
 def main(image=None):
 
     # Reading the image (this usually will not be needed if an image is passed into this function)
-    image = cv2.imread("foam_detection/images/3.jpg")
+    image = cv2.imread("foam_detection/foaming_images/Bluex3_foamx3.jpg")
     
     # Rescaling the image to be maximum size of (768x768)
     scale = 768/max(image.shape[0],image.shape[1])
@@ -19,11 +19,11 @@ def main(image=None):
 
     # Finding the edges of the image using Canny Edge detector
     canny = getEdges(image, 3)
-    cv2.imshow("canny", canny)
 
     # Extract the flask from the image using the canny edges and getting the bounding box
     masked_image, box = extractFlask(image, canny)
     x,y,w,h = box
+    cv2.imshow("masked_image", masked_image)
 
     # Detecting edges again using Canny Edges method to find the water/foam levels
     canny = getEdges(masked_image, 3)

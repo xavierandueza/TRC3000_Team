@@ -12,7 +12,7 @@ def toBinary(image):
     # Apply Bilateral Blurring (to reduce noise while keeping edges sharp)
     blur = cv2.bilateralFilter(gray, 5, 75, 75)
     # Converting blurred image into binary image
-    thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+    thresh = cv2.threshold(blur, 30, 255, cv2.THRESH_BINARY_INV)[1]
     # cv2.imshow('thresh',thresh)
 
     return thresh

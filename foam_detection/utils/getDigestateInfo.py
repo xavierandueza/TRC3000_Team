@@ -17,7 +17,7 @@ def getDigestateInfo(image, canny, box):
                 liquid_height = i
                 getting_liquid = False
             else:
-                foam_height = i
+                foam_height = i-liquid_height
                 break
 
     liquid_colour = image[y+h-(liquid_height//2)][x+(w//2)]

@@ -12,6 +12,7 @@ def findBestContour(canny, search_contour):
     """
     # Use the canny edges to list out the contours
     contours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    
 
     max_points = -math.inf
     for c in contours:
