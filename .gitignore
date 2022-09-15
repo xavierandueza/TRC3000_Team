@@ -3,3 +3,5 @@ foam_semantic_segmentation/train_images/
 foam_semantic_segmentation/train_labels/
 foam_semantic_segmentation/valid_images/
 foam_semantic_segmentation/valid_labels/
+*.pt
+*.pth
