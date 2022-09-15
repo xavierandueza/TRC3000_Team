@@ -25,9 +25,14 @@ def getFoamFromModel(image):
     v = v.draw_instance_predictions(output_instance)
 
     detected_classes = output_instance.pred_classes.numpy().tolist()
-    foam_idx = detected_classes.index(1)
-    detected_bboxs = output_instance.pred_boxes.tensor.numpy().tolist()
-    bbox = detected_bboxs[foam_idx]
+    if detected_classes != []:
+        try:
+            foam_idx = detected_classes.index(1)
+        except ValueError: # if there is no foam
+            return None, cv2.cvtColor(v.get_image(), cv2.COLOR_RGB2BGR)
+        else:
+            detected_bboxs = output_instance.pred_boxes.tensor.numpy().tolist()
+            bbox = detected_bboxs[foam_idx]
 
     # mask = output_instance.pred_masks.numpy()
     # print( mask.shape)

@@ -31,15 +31,19 @@ def main(image = None):
 
     #########################################################################################################   
     # Get bounding box of the foam using trained mask rcnn model
+    no_foam = False
     foam_bbox, viz = getFoamFromModel(flask_img)
+    if foam_bbox == None:
+        no_foam = True
     # cv2.imshow("final_output", viz)
     #########################################################################################################
     # Extract important digestate info from image and canny edges
     digestate_info = getDigestateInfo(flask_img, box, foam_bbox)
     liquid_colour = digestate_info["digestate colour"]
     liquid_height = digestate_info["digestate height"]
-    foam_height = digestate_info["foam height"]
-    foam_colour = digestate_info["foam colour"]
+    if not no_foam:
+        foam_height = digestate_info["foam height"]
+        foam_colour = digestate_info["foam colour"]
 
     #########################################################################################################
     # Displaying the detected colour
@@ -49,12 +53,13 @@ def main(image = None):
             colour[i][j] = liquid_colour
     cv2.imshow("colour_of_liquid", colour)
 
-    # Displaying the detected colour
-    colour_foam = np.zeros(image.shape, dtype = "uint8")
-    for i in range(colour_foam.shape[0]):
-        for j in range(colour_foam.shape[1]):
-            colour_foam[i][j] = foam_colour
-    cv2.imshow("colour_of_foam", colour_foam)
+    # Displaying the detected foam colour
+    if not no_foam:
+        colour_foam = np.zeros(image.shape, dtype = "uint8")
+        for i in range(colour_foam.shape[0]):
+            for j in range(colour_foam.shape[1]):
+                colour_foam[i][j] = foam_colour
+        cv2.imshow("colour_of_foam", colour_foam)
 
     #########################################################################################################
     # Displaying the detected digestate/liquid height
@@ -63,9 +68,10 @@ def main(image = None):
     cv2.putText(viz,string, (x+(w//2)+3,y+h-(liquid_height//2)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
 
     # Displaying the detected foam height
-    cv2.line(viz, (x+(w//2), int(foam_bbox[1])), (x+(w//2), int(foam_bbox[3])), (0, 255, 0), 2)
-    string = "height in pixels: " + str(foam_height)
-    cv2.putText(viz,string, (x+(w//2)+3,int(abs(foam_bbox[3]-foam_bbox[1]))+int(min(foam_bbox[1], foam_bbox[3]))), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
+    if not no_foam:
+        cv2.line(viz, (x+(w//2), int(foam_bbox[1])), (x+(w//2), int(foam_bbox[3])), (0, 255, 0), 2)
+        string = "height in pixels: " + str(foam_height)
+        cv2.putText(viz,string, (x+(w//2)+3,int(abs(foam_bbox[3]-foam_bbox[1]))+int(min(foam_bbox[1], foam_bbox[3]))), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
     cv2.imshow("final_output", viz)
 
     cv2.waitKey(0)

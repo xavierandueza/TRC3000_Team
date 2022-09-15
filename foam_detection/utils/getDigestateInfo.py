@@ -21,9 +21,12 @@ def getDigestateInfo(image, box, foam_bbox):
             liquid_height = i
             break
     liquid_colour = image[y+h-(liquid_height//2)][x+(w//2)]
-
-    foam_height = int(abs(foam_bbox[3] - foam_bbox[1]))
-    foam_colour = image[int(abs(foam_bbox[3]-foam_bbox[1])//2)+int(min(foam_bbox[1], foam_bbox[3]))][x+(w//2)]
+    if foam_bbox is None:
+        foam_height = None
+        foam_colour = None
+    else:
+        foam_height = int(abs(foam_bbox[3] - foam_bbox[1]))
+        foam_colour = image[int(abs(foam_bbox[3]-foam_bbox[1])//2)+int(min(foam_bbox[1], foam_bbox[3]))][x+(w//2)]
     digestate_info = {
         "digestate height": liquid_height,
         "digestate colour": liquid_colour,
