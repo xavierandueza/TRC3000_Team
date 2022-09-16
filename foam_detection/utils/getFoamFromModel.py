@@ -3,8 +3,10 @@ import torch
 import torchvision
 import pickle
 import random
-from detectron2.engine import DefaultPredictor
 import sys
+sys.path.append("./foam_detection/detectron2-main/")
+sys.path.append("./detectron2-main/")
+from detectron2.engine import DefaultPredictor
 from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.visualizer import ColorMode
 import cv2
@@ -15,7 +17,7 @@ def getFoamFromModel(image):
         cfg = pickle.load(f)
 
     cfg.MODEL.WEIGHTS = os.path.join("foam_mask_rcnn/" + cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.3
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
     predictor = DefaultPredictor(cfg)
 
     outputs = predictor(image)
@@ -25,6 +27,7 @@ def getFoamFromModel(image):
     v = v.draw_instance_predictions(output_instance)
 
     detected_classes = output_instance.pred_classes.numpy().tolist()
+    print(detected_classes)
     if detected_classes != []:
         try:
             foam_idx = detected_classes.index(1)
