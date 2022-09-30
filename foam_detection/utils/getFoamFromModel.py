@@ -1,11 +1,9 @@
-import os
-import torch
-import torchvision
-import pickle
-import random
 import sys
 sys.path.append("./foam_detection/detectron2-main/")
 sys.path.append("./detectron2-main/")
+
+import os
+import pickle
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.visualizer import ColorMode
