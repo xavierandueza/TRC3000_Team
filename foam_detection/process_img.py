@@ -1,5 +1,10 @@
 
 import numpy as np
+import sys
+sys.path.append("foam_detection/")
+sys.path.append("foam_detection/detectron2-main/")
+sys.path.append("detectron2-main/")
+sys.path.append("foam_detection/rembg-main/")
 from utils.rescaleFrame import rescaleFrame
 from utils.getEdges import getEdges
 from utils.getDigestateInfo import getDigestateInfo
@@ -8,19 +13,16 @@ from utils.getBoundingBox import getBoundingBox
 from utils.removeGlare import removeGlare
 from utils.getFoamFromModel import getFoamFromModel
 from utils.colourBlockDetection import colourBlockDetection
-import sys
-sys.path.append("foam_detection/")
-sys.path.append("foam_detection/detectron2-main/")
-sys.path.append("detectron2-main/")
-sys.path.append("foam_detection/rembg-main/")
+
 import rembg
 import cv2
 
 
-def main(image = None):
+def process_img(image):
     # image = cv2.imread("foam_detection/images/clear.jpg")
     # image = cv2.imread("foam_detection/images/fg1.jpg")
-    image = cv2.imread("foam_detection/foaming_images/test2.jpg")
+    if image is None:
+        image = cv2.imread("foam_detection/foaming_images/test2.jpg")
     # image = cv2.imread("foam_detection/foaming_images/Yellowx3_foamx5.jpg")
     scale = 720/max(image.shape[0],image.shape[1])
     image = rescaleFrame(image, scale)
@@ -104,6 +106,7 @@ def main(image = None):
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    return viz, digestate_info
 
 if __name__ == "__main__":
     main()
