@@ -24,6 +24,7 @@ def main(image = None):
     # image = cv2.imread("foam_detection/foaming_images/Yellowx3_foamx5.jpg")
     scale = 720/max(image.shape[0],image.shape[1])
     image = rescaleFrame(image, scale)
+    cv2.imshow("original_image", image)
 
     #########################################################################################################
     # Removing the backgorund using AI method from rembg package
@@ -84,19 +85,21 @@ def main(image = None):
     if no_foam:
         # Displaying the detected digestate/liquid height
         cv2.line(viz, (x+(w//2), y+h-(liquid_height)), (x+(w//2),y+h), (0, 0, 255), 2)
-        string = "height in mm: " + str(round(true_liquid_height*1000,2))
-        cv2.putText(viz,string, (x+(w//2)+3,y+h-(liquid_height//2)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+        string = "digestate height: " + str(round(true_liquid_height*1000,2))  +  " mm"
+        cv2.putText(viz,string, (x,y+h-(liquid_height+10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+        print(string)
     else:
         # Displaying the detected digestate/liquid height
         cv2.line(viz, (x+(w//2), foam_edge), (x+(w//2),foam_edge+(liquid_height)), (0, 0, 255), 2)
-        string = "height in mm: " + str(round(true_liquid_height*1000,2))
-        cv2.putText(viz,string, (x+(w//2)+3,foam_edge+(liquid_height//2)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
-
+        string = "digestate height: " + str(round(true_liquid_height*1000,2))  + " mm"
+        cv2.putText(viz,string, (x, min(foam_edge+(liquid_height+25), viz.shape[0]-50)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+        print(string)
 
         # Displaying the detected foam height
         cv2.line(viz, (x+(w//2), round(foam_bbox[1])), (x+(w//2), round(foam_bbox[3])), (0, 255, 0), 2)
-        string = "height in mm: " + str(round(true_foam_height*1000,2))
-        cv2.putText(viz,string, (x+(w//2)+3,round(abs(foam_bbox[3]-foam_bbox[1])//2)+round(min(foam_bbox[1], foam_bbox[3]))), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
+        string = "foam height: " + str(round(true_foam_height*1000,2))  + " mm"
+        cv2.putText(viz,string, (x, max(round(min(foam_bbox[1], foam_bbox[3]) -25), 0)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
+        print(string)
     cv2.imshow("final_output", viz)
 
     cv2.waitKey(0)

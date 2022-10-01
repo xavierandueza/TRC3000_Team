@@ -17,15 +17,15 @@ def colourBlockDetection(imageFrame, viz, bgr):
     # Set range for red color and 
     # define mask 
 
-    h_thresh = 30
-    s_thresh = 50
-    v_thresh = 50
+    h_thresh = 40
+    s_thresh = 60
+    v_thresh = 60
     minHSV = np.array([hsv[0] - h_thresh, hsv[1] - s_thresh, hsv[2] - v_thresh])
-    if minHSV[0] == 0:
+    if minHSV[0] <= 0:
         minHSV[0] = 1
-    if minHSV[1] == 0:
+    if minHSV[1] <= 0:
         minHSV[1] = 1
-    if minHSV[2] == 0:
+    if minHSV[2] <= 0:
         minHSV[2] = 1
 
 
@@ -44,10 +44,10 @@ def colourBlockDetection(imageFrame, viz, bgr):
     mask = cv2.dilate(mask, kernal, iterations=2) 
     res = cv2.bitwise_and(imageFrame, imageFrame, mask = mask) 
 
-    # cv2.imshow("colour_mask", mask)
-    # print(hsv)
-    # print(minHSV)
-    # print(maxHSV)
+    cv2.imshow("colour_mask", mask)
+    print(hsv)
+    print(minHSV)
+    print(maxHSV)
 
 
     # Creating contour of colour blob
@@ -55,7 +55,7 @@ def colourBlockDetection(imageFrame, viz, bgr):
     max_contour = sorted(contours, key = cv2.contourArea, reverse=True)[0]
     if cv2.contourArea(max_contour) > 300: 
         x, y, w, h = cv2.boundingRect(max_contour) 
-        viz = cv2.rectangle(viz, (x, y), (x + w, y + h), (0, 0, 255), 2) 
+        viz = cv2.rectangle(viz, (x, y), (x + w, y + h), (255, 0, 0), 2) 
         # cv2.putText(viz, "Red Colour", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
 
     return viz
