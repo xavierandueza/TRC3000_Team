@@ -14,7 +14,7 @@ def getDigestateInfo(image, box, foam_bbox, no_foam):
     """
 
     canny = getEdges(image, 5)
-    cv2.imshow("edges for digestate info", canny)
+    # cv2.imshow("edges for digestate info", canny)
     x,y,w,h = box
 
     TRUE_FLASK_HEIGHT = 0.1421 #metres
