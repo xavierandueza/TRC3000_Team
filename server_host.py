@@ -19,12 +19,12 @@ client, addr = sock.accept()
 
 # Client recieves processed img from server
 file_name = 'transferred_files/foam_img_from_pi.jpg'
-file_size = sock.recv(100).decode()
+file_size = client.recv(100).decode()
 with open(file_name, "wb") as file:
     c = 0
     start_time = time.time()
     while c <= int(file_size):
-        data = sock.recv(1024)
+        data = client.recv(1024)
         if not (data):
             break
         file.write(data)
@@ -41,7 +41,7 @@ cv2.imwrite("transferred_files/viz.jpg", viz)
 
 file_name = "transferred_files/viz.jpg"
 file_size = os.path.getsize(file_name)
-sock.send(str(file_size).encode())
+client.send(str(file_size).encode())
 with open(file_name, "rb") as file:
     c = 0
     start_time = time.time()
@@ -49,7 +49,7 @@ with open(file_name, "rb") as file:
         data = file.read(1024)
         if not (data):
             break
-        sock.sendall(data)
+        client.sendall(data)
         c+= len(data)
     end_time = time.time()
 print("Analyzed Image Sent To Client, Time Taken: " + str(end_time-start_time))
