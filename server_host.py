@@ -16,49 +16,32 @@ print(machine)
 client, addr = sock.accept()
 
 # Server recieves img from raspberry pi
-file_name = client.recv(1024).decode()
-print(file_name)
 
-# Open and write file
-with open("transferred_files/" + file_name, "wb") as f:    
-    start_time = time.time()
+file = open('transferred_files/foam_img_from_pi.jpg', "wb")
+image_chunk = client.recv(2048)
 
-    while True:
-        data = client.recv(1024)
-        if not data:
-            print("breaking")
-            break
-        f.write(data)
-    end_time = time.time()
-f.close()
-print("Transfer Complete, Time Taken: " + str(end_time-start_time))
+while image_chunk:
+    file.write(image_chunk)
+    image_chunk = client.recv(2048)
+file.close
+print("Image Recieved From Pi")
 
 time.sleep(2)
 
 # Server processes img
-img = cv2.imread("transferred_files/" + file_name)
+img = cv2.imread("transferred_files/foam_img_from_pi.jpg")
 viz, digestate_data = process_img(img)
-cv2.imwrite("transferred_files/viz.png", viz)
+cv2.imwrite("transferred_files/viz.jpg", viz)
 
 # Server sends processed img back to pi
-file_name = "transferred_files/viz.png"
-file_size = os.path.getsize(file_name)
 
-# Send the file details to the client.
-client.send(file_name.encode('utf-8'))
-# client.send(str(file_size).encode('utf-8'))
-
-# Open and read the file.
-with open(file_name, "rb") as file:
-    start_time = time.time()
-    while True:
-        data = file.read(1024)
-        if not (data):
-            break
-        client.send(data)
-    end_time = time.time()
+file = open("transferred_files/viz.jpg", "rb")
+image_data = file.read(2048)
+while image_data:
+    client.send(image_data)
+    image_data = file.read(2048)
 file.close()
-print("Transfer Complete, Time Taken: " + str(end_time-start_time))
+print("Analyzed Image Sent To Client")
 
 
 client.close()
