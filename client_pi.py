@@ -1,4 +1,4 @@
-import os, socket, time
+import os, socket, time, struct
 
 HOST = "192.168.246.239"
 HOST = "192.168.234.172"
@@ -14,35 +14,29 @@ sock.connect((HOST,PORT))
 
 # Raspberry Pi sends over img it captures from pi-cam:
 file_name = "foam_img.png"
-file_size = os.path.getsize(file_name)
-sock.send(str(file_size).encode())
-with open(file_name, "rb") as file:
-    c = 0
-    start_time = time.time()
-    while c <= file_size:
-        data = file.read(1024)
-        if not (data):
-            break
-        sock.sendall(data)
-        c+= len(data)
-    end_time = time.time()
-time.sleep(2)
-print("Image Sent To Host, Time Taken: " + str(end_time-start_time))
+file_len = os.stat(file_name).st_size
+msg_header = struct.pack('<I', file_len)
+sock.sendall(msg_header)
+fd = open(file_name, 'rb')
+data = fd.read(file_len)
+while data:
+    sock.sendall(data)
+    data = fd.read(file_len)
+fd.close()
+print("Image Sent To Host")
 
 # Client recieves processed img from server
 file_name = 'transferred_files/viz.png', "wb"
-file_size = sock.recv(1024).decode()
-with open(file_name, "wb") as file:
-    c = 0
-    start_time = time.time()
-    while c <= int(file_size):
-        data = sock.recv(1024)
-        if not (data):
-            break
-        file.write(data)
-        c+= len(data)
-    end_time = time.time()
-time.sleep(2)
-print("Image Recieved From Host, Time Taken: " + str(end_time-start_time))
+msg_header = sock.recv(4)
+while len(msg_header) != 4:
+    msg_header += sock.recv(4- len(msg_header))
+file_len = struct.unpack('<I', msg_header)[0]
+nFile = open(file_name, 'wb')
+data = sock.recv(file_len)
+while len(data) != file_len:
+    data += sock.recv(file_len - len(data))
+nFile.write(data)
+nFile.close()
+print("Image Recieved From Host")
 
 sock.close()

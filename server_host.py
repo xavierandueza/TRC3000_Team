@@ -1,6 +1,7 @@
 import os, socket, time
 from foam_detection.process_img import process_img
 import cv2
+import struct
 
 # Creating socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,20 +20,17 @@ client, addr = sock.accept()
 
 # Client recieves processed img from server
 file_name = 'transferred_files/foam_img_from_pi.png'
-file_size = client.recv(1024).decode()
-with open(file_name, "wb") as file:
-    c = 0
-    start_time = time.time()
-    while c <= int(file_size):
-        data = client.recv(1024)
-        if not (data):
-            break
-        file.write(data)
-        c+= len(data)
-        print(c, file_size)
-    end_time = time.time()
-time.sleep(2)
-print("Image Recieved From Pi, Time Taken: " + str(end_time-start_time))
+msg_header = client.recv(4)
+while len(msg_header) != 4:
+    msg_header += client.recv(4- len(msg_header))
+file_len = struct.unpack('<I', msg_header)[0]
+nFile = open(file_name, 'wb')
+data = client.recv(file_len)
+while len(data) != file_len:
+    data += client.recv(file_len - len(data))
+nFile.write(data)
+nFile.close()
+print("Image Recieved From Pi")
 
 # Server processes img
 img = cv2.imread("transferred_files/foam_img_from_pi.png")
@@ -42,20 +40,16 @@ cv2.imwrite("transferred_files/viz.png", viz)
 # Server sends processed img back to pi
 
 file_name = "transferred_files/viz.png"
-file_size = os.path.getsize(file_name)
-client.send(str(file_size).encode())
-with open(file_name, "rb") as file:
-    c = 0
-    start_time = time.time()
-    while c <= file_size:
-        data = file.read(1024)
-        if not (data):
-            break
-        client.sendall(data)
-        c+= len(data)
-    end_time = time.time()
-time.sleep(2)
-print("Analyzed Image Sent To Client, Time Taken: " + str(end_time-start_time))
+file_len = os.stat(file_name).st_size
+msg_header = struct.pack('<I', file_len)
+client.sendall(msg_header)
+fd = open(file_name, 'rb')
+data = fd.read(file_len)
+while data:
+    client.sendall(data)
+    data = fd.read(file_len)
+fd.close()
+print("Analyzed Image Sent To Client")
 
 
 client.close()
