@@ -80,7 +80,7 @@ def process_img(image):
         for i in range(colour_foam.shape[0]):
             for j in range(colour_foam.shape[1]):
                 colour_foam[i][j] = foam_colour
-        cv2.imshow("colour_of_foam", colour_foam)
+        # cv2.imshow("colour_of_foam", colour_foam)
 
     #########################################################################################################
     # Displaying height lines
@@ -109,4 +109,4 @@ def process_img(image):
     return viz, digestate_info
 
 if __name__ == "__main__":
-    main()
+    process_img()

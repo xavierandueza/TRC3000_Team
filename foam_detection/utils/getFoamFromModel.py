@@ -25,7 +25,7 @@ def getFoamFromModel(image):
     v = v.draw_instance_predictions(output_instance)
 
     detected_classes = output_instance.pred_classes.numpy().tolist()
-    print(detected_classes)
+    # print(detected_classes)
     if detected_classes != []:
         try:
             foam_idx = detected_classes.index(1)

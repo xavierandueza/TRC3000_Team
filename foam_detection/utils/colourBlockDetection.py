@@ -44,10 +44,10 @@ def colourBlockDetection(imageFrame, viz, bgr):
     mask = cv2.dilate(mask, kernal, iterations=2) 
     res = cv2.bitwise_and(imageFrame, imageFrame, mask = mask) 
 
-    cv2.imshow("colour_mask", mask)
-    print(hsv)
-    print(minHSV)
-    print(maxHSV)
+    # cv2.imshow("colour_mask", mask)
+    # print(hsv)
+    # print(minHSV)
+    # print(maxHSV)
 
 
     # Creating contour of colour blob

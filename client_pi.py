@@ -26,7 +26,7 @@ fd.close()
 print("Image Sent To Host")
 
 # Client recieves processed img from server
-file_name = 'transferred_files/viz.png', "wb"
+file_name = 'transferred_files/viz.png'
 msg_header = sock.recv(4)
 while len(msg_header) != 4:
     msg_header += sock.recv(4- len(msg_header))
