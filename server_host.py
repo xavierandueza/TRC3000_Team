@@ -11,7 +11,7 @@ machine = socket.gethostbyname(socket.gethostname())
 sock.bind((HOST, PORT))
 sock.listen(3)
 print("HOST: ", sock.getsockname())
-print(machine)
+print("Server is Listening...")
 
 # Accepting the connection from the client
 client, addr = sock.accept()
@@ -19,7 +19,7 @@ client, addr = sock.accept()
 # Server recieves img from raspberry pi
 
 # Client recieves processed img from server
-file_name = 'transferred_files/foam_img_from_pi.png'
+file_name = 'transferred_files/foam_img_from_pi.jpg'
 msg_header = client.recv(4)
 while len(msg_header) != 4:
     msg_header += client.recv(4- len(msg_header))
@@ -33,13 +33,13 @@ nFile.close()
 print("Image Recieved From Pi")
 
 # Server processes img
-img = cv2.imread("transferred_files/foam_img_from_pi.png")
+img = cv2.imread("transferred_files/foam_img_from_pi.jpg")
 viz, digestate_data = process_img(img)
 cv2.imwrite("transferred_files/viz.png", viz)
 
 # Server sends processed img back to pi
 
-file_name = "transferred_files/viz.png"
+file_name = "transferred_files/viz.jpg"
 file_len = os.stat(file_name).st_size
 msg_header = struct.pack('<I', file_len)
 client.sendall(msg_header)

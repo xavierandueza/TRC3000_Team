@@ -13,7 +13,7 @@ sock.connect((HOST,PORT))
 
 
 # Raspberry Pi sends over img it captures from pi-cam:
-file_name = "foam_img.png"
+file_name = "foam_img.jpg"
 file_len = os.stat(file_name).st_size
 msg_header = struct.pack('<I', file_len)
 sock.sendall(msg_header)
@@ -26,7 +26,7 @@ fd.close()
 print("Image Sent To Host")
 
 # Client recieves processed img from server
-file_name = 'transferred_files/viz.png'
+file_name = 'transferred_files/viz.jpg'
 msg_header = sock.recv(4)
 while len(msg_header) != 4:
     msg_header += sock.recv(4- len(msg_header))
