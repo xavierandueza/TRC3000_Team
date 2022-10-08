@@ -13,7 +13,7 @@ sock.connect((HOST,PORT))
 
 
 # Raspberry Pi sends over img it captures from pi-cam:
-file_name = "Bluex3_foamx3.jpg"
+file_name = "foam_img.jpg"
 
 # Send the file details to the client.
 file = open(file_name, "rb")
