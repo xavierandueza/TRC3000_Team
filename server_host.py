@@ -17,16 +17,20 @@ client, addr = sock.accept()
 
 # Server recieves img from raspberry pi
 
-file = open('transferred_files/foam_img_from_pi.jpg', "wb")
-image_chunk = client.recv(2048)
-
-while image_chunk:
-    file.write(image_chunk)
-    image_chunk = client.recv(2048)
-file.close
-print("Image Recieved From Pi")
-
-time.sleep(2)
+# Client recieves processed img from server
+file_name = 'transferred_files/foam_img_from_pi.jpg'
+file_size = sock.recv(100).decode()
+with open(file_name, "wb") as file:
+    c = 0
+    start_time = time.time()
+    while c <= int(file_size):
+        data = sock.recv(1024)
+        if not (data):
+            break
+        file.write(data)
+        c+= len(data)
+    end_time = time.time()
+print("Image Recieved From Pi, Time Taken: " + str(end_time-start_time))
 
 # Server processes img
 img = cv2.imread("transferred_files/foam_img_from_pi.jpg")
@@ -35,13 +39,20 @@ cv2.imwrite("transferred_files/viz.jpg", viz)
 
 # Server sends processed img back to pi
 
-file = open("transferred_files/viz.jpg", "rb")
-image_data = file.read(2048)
-while image_data:
-    client.send(image_data)
-    image_data = file.read(2048)
-file.close()
-print("Analyzed Image Sent To Client")
+file_name = "transferred_files/viz.jpg"
+file_size = os.path.getsize(file_name)
+sock.send(str(file_size).encode())
+with open(file_name, "rb") as file:
+    c = 0
+    start_time = time.time()
+    while c <= file_size:
+        data = file.read(1024)
+        if not (data):
+            break
+        sock.sendall(data)
+        c+= len(data)
+    end_time = time.time()
+print("Analyzed Image Sent To Client, Time Taken: " + str(end_time-start_time))
 
 
 client.close()
