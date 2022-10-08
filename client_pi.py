@@ -1,7 +1,8 @@
 import os, socket, time
 
 HOST = "192.168.246.239"
-PORT = 52223
+HOST = "192.168.234.172"
+PORT = 52212
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
