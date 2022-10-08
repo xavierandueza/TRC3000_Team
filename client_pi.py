@@ -2,7 +2,7 @@ import os, socket, time
 
 HOST = "192.168.246.239"
 HOST = "192.168.234.172"
-PORT = 52212
+PORT = 52214
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -17,12 +17,12 @@ sock.connect((HOST,PORT))
 
 
 # Raspberry Pi sends over img it captures from pi-cam:
-file_name = "img_from_picam.jpg"
+file_name = "Bluex3_foamx3.jpg"
 file_size = os.path.getsize(file_name)
 
 # Send the file details to the client.
 sock.send(file_name.encode('utf-8'))
-# client.send(str(file_size).encode('utf-8'))
+#  client.send(str(file_size).encode('utf-8'))
 
 # Open and read the file.
 with open(file_name, "rb") as file:
