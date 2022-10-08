@@ -18,8 +18,8 @@ client, addr = sock.accept()
 # Server recieves img from raspberry pi
 
 # Client recieves processed img from server
-file_name = 'transferred_files/foam_img_from_pi.jpg'
-file_size = client.recv(100).decode()
+file_name = 'transferred_files/foam_img_from_pi.png'
+file_size = client.recv(1024).decode()
 with open(file_name, "wb") as file:
     c = 0
     start_time = time.time()
@@ -29,17 +29,19 @@ with open(file_name, "wb") as file:
             break
         file.write(data)
         c+= len(data)
+        print(c, file_size)
     end_time = time.time()
+time.sleep(2)
 print("Image Recieved From Pi, Time Taken: " + str(end_time-start_time))
 
 # Server processes img
-img = cv2.imread("transferred_files/foam_img_from_pi.jpg")
+img = cv2.imread("transferred_files/foam_img_from_pi.png")
 viz, digestate_data = process_img(img)
-cv2.imwrite("transferred_files/viz.jpg", viz)
+cv2.imwrite("transferred_files/viz.png", viz)
 
 # Server sends processed img back to pi
 
-file_name = "transferred_files/viz.jpg"
+file_name = "transferred_files/viz.png"
 file_size = os.path.getsize(file_name)
 client.send(str(file_size).encode())
 with open(file_name, "rb") as file:
@@ -52,6 +54,7 @@ with open(file_name, "rb") as file:
         client.sendall(data)
         c+= len(data)
     end_time = time.time()
+time.sleep(2)
 print("Analyzed Image Sent To Client, Time Taken: " + str(end_time-start_time))
 
 
