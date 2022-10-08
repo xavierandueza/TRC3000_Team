@@ -23,7 +23,7 @@ while data:
     sock.sendall(data)
     data = fd.read(file_len)
 fd.close()
-print("Image Sent To Host")
+# print("Image Sent To Host")
 
 # Client recieves processed img from server
 file_name = 'transferred_files/viz.jpg'
@@ -37,6 +37,6 @@ while len(data) != file_len:
     data += sock.recv(file_len - len(data))
 nFile.write(data)
 nFile.close()
-print("Image Recieved From Host")
+# print("Image Recieved From Host")
 
 sock.close()

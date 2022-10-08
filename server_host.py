@@ -35,7 +35,7 @@ print("Image Recieved From Pi")
 # Server processes img
 img = cv2.imread("transferred_files/foam_img_from_pi.jpg")
 viz, digestate_data = process_img(img)
-cv2.imwrite("transferred_files/viz.png", viz)
+cv2.imwrite("transferred_files/viz.jpg", viz)
 
 # Server sends processed img back to pi
 
