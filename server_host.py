@@ -34,12 +34,39 @@ print("Image Recieved From Pi")
 
 # Server processes img
 img = cv2.imread("transferred_files/foam_img_from_pi.jpg")
-viz, digestate_data = process_img(img)
-cv2.imwrite("transferred_files/viz.jpg", viz)
+viz_list, viz_list_str, digestate_colour, foam_colour, digestate_info = process_img(img)
+for i in range(len(viz_list)):
+    cv2.imwrite("transferred_files/" +viz_list_str[i] + ".jpg", viz_list[i])
+cv2.imwrite("transferred_files/digestate_colour.jpg", digestate_colour)
+cv2.imwrite("transferred_files/foam_colour.jpg", foam_colour)
 
 # Server sends processed img back to pi
+for i in range(len(viz_list)):
+    file_name = "transferred_files/" + viz_list_str[i] + ".jpg"
+    file_len = os.stat(file_name).st_size
+    msg_header = struct.pack('<I', file_len)
+    client.sendall(msg_header)
+    fd = open(file_name, 'rb')
+    data = fd.read(file_len)
+    while data:
+        client.sendall(data)
+        data = fd.read(file_len)
+    fd.close()
+    print("Analyzed Image Sent To Client")
 
-file_name = "transferred_files/viz.jpg"
+file_name = "transferred_files/digestate_colour.jpg"
+file_len = os.stat(file_name).st_size
+msg_header = struct.pack('<I', file_len)
+client.sendall(msg_header)
+fd = open(file_name, 'rb')
+data = fd.read(file_len)
+while data:
+    client.sendall(data)
+    data = fd.read(file_len)
+fd.close()
+print("Analyzed Image Sent To Client")
+
+file_name = "transferred_files/foam_colour.jpg"
 file_len = os.stat(file_name).st_size
 msg_header = struct.pack('<I', file_len)
 client.sendall(msg_header)

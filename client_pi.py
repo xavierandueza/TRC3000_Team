@@ -25,8 +25,23 @@ while data:
 fd.close()
 # print("Image Sent To Host")
 
+viz_list_str = ["viz0000", "viz0001", "viz0010", "viz0011", "viz0100", "viz0101", "viz0110", "viz0111", "viz1000", "viz1001", "viz1010", "viz1011", "viz1100", "viz1101", "viz1110", "viz1111"]
 # Client recieves processed img from server
-file_name = 'transferred_files/viz.jpg'
+for i in range(16):
+    file_name = 'transferred_files/' + viz_list_str[i] + '.jpg'
+    msg_header = sock.recv(4)
+    while len(msg_header) != 4:
+        msg_header += sock.recv(4- len(msg_header))
+    file_len = struct.unpack('<I', msg_header)[0]
+    nFile = open(file_name, 'wb')
+    data = sock.recv(file_len)
+    while len(data) != file_len:
+        data += sock.recv(file_len - len(data))
+    nFile.write(data)
+    nFile.close()
+    # print("Image Recieved From Host")
+
+file_name = "transferred_files/digestate_colour.jpg"
 msg_header = sock.recv(4)
 while len(msg_header) != 4:
     msg_header += sock.recv(4- len(msg_header))
@@ -37,6 +52,17 @@ while len(data) != file_len:
     data += sock.recv(file_len - len(data))
 nFile.write(data)
 nFile.close()
-# print("Image Recieved From Host")
+
+file_name = "transferred_files/foam_colour.jpg"
+msg_header = sock.recv(4)
+while len(msg_header) != 4:
+    msg_header += sock.recv(4- len(msg_header))
+file_len = struct.unpack('<I', msg_header)[0]
+nFile = open(file_name, 'wb')
+data = sock.recv(file_len)
+while len(data) != file_len:
+    data += sock.recv(file_len - len(data))
+nFile.write(data)
+nFile.close()
 
 sock.close()
