@@ -15,7 +15,7 @@ def getFoamFromModel(image):
         cfg = pickle.load(f)
 
     cfg.MODEL.WEIGHTS = os.path.join("foam_mask_rcnn/" + cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.2
     predictor = DefaultPredictor(cfg)
 
     outputs = predictor(image)
@@ -26,6 +26,7 @@ def getFoamFromModel(image):
 
     detected_classes = output_instance.pred_classes.numpy().tolist()
     # print(detected_classes)
+    bbox = None
     if detected_classes != []:
         try:
             foam_idx = detected_classes.index(1)

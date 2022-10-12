@@ -33,7 +33,7 @@ def process_img(image=None):
     flask_img = cv2.cvtColor(flask_img, cv2.COLOR_BGRA2BGR)
     # # Optional: Remove Glare
     # flask_img = removeGlare(flask_img, 210)
-    # cv2.imshow("removed_background", flask_img)
+    cv2.imshow("removed_background", flask_img)
     # foam - foam height - digestate - digestate height
     
     viz0000 = flask_img.copy()
@@ -75,7 +75,7 @@ def process_img(image=None):
         no_foam = True
     else:
         foam_edge = round(max(foam_bbox[3], foam_bbox[1]))
-
+    # cv2.imshow("foam_viz", viz_list[-1])
 
     #########################################################################################################
     # Extract important digestate info from image and canny edges
@@ -119,7 +119,7 @@ def process_img(image=None):
                 # Displaying the detected digestate/liquid height
                 cv2.line(viz_list[i], (x+(w//2), y+h-(liquid_height)), (x+(w//2),y+h), (0, 0, 255), 2)
                 string = "digestate height: " + str(round(true_liquid_height*1000,2))  +  " mm"
-                cv2.putText(viz_list[i],string, (x,y+h-(liquid_height+10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+                cv2.putText(viz_list[i],string, (x, min(y+h +50, viz_list[i].shape[0]-25)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
                 # print(string)
     else:
         for i in range(len(viz_list)):
@@ -127,14 +127,14 @@ def process_img(image=None):
                 # Displaying the detected digestate/liquid height
                 cv2.line(viz_list[i], (x+(w//2), foam_edge), (x+(w//2),foam_edge+(liquid_height)), (0, 0, 255), 2)
                 string = "digestate height: " + str(round(true_liquid_height*1000,2))  + " mm"
-                cv2.putText(viz_list[i],string, (x, min(foam_edge+(liquid_height+25), viz_list[i].shape[0]-50)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+                cv2.putText(viz_list[i],string, (x, min(y+h +50, viz_list[i].shape[0]-25)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
                 # print(string)
         for i in range(len(viz_list)):
             if viz_list_str[i][-3] == "1":
                 # Displaying the detected foam height
                 cv2.line(viz_list[i], (x+(w//2), round(foam_bbox[1])), (x+(w//2), round(foam_bbox[3])), (0, 255, 0), 2)
                 string = "foam height: " + str(round(true_foam_height*1000,2))  + " mm"
-                cv2.putText(viz_list[i],string, (x, max(round(min(foam_bbox[1], foam_bbox[3]) -25), 0)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
+                cv2.putText(viz_list[i],string, (x, max(round(min(foam_bbox[1], foam_bbox[3]) -50), 25)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
                 # print(string)
             # cv2.imshow("final_output", viz)
 

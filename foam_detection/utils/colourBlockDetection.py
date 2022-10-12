@@ -17,9 +17,9 @@ def colourBlockDetection(imageFrame, viz, bgr):
     # Set range for red color and 
     # define mask 
 
-    h_thresh = 40
-    s_thresh = 60
-    v_thresh = 60
+    h_thresh = 50
+    s_thresh = 70
+    v_thresh = 70
     minHSV = np.array([hsv[0] - h_thresh, hsv[1] - s_thresh, hsv[2] - v_thresh])
     if minHSV[0] <= 0:
         minHSV[0] = 1

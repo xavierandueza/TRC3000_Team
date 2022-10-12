@@ -16,22 +16,29 @@ def getDigestateInfo(image, box, foam_bbox, no_foam):
     canny = getEdges(image, 5)
     # cv2.imshow("edges for digestate info", canny)
     x,y,w,h = box
+    # print(box)
 
-    TRUE_FLASK_HEIGHT = 0.1421 #metres
+    # plastic flask
+    # TRUE_FLASK_HEIGHT = 0.1421 #metres
+    
+    # glass jar
+    TRUE_FLASK_HEIGHT = 0.135 #metres
 
 
 
     # print( box)
-
+    # cv2.imshow("c", canny)  
+    # cv2.waitKey(0)
     
     if no_foam:
         foam_height = None
         foam_colour = None
         ratio_foam_to_flask = 0
 
+
         # get liquid height
         for i in range(h):
-            if canny[y+h-(i+1)][canny.shape[1]//2] == 255 and i>50:
+            if canny[y+h-(i+1)][x+(w//2)] == 255 and i>50:
                 liquid_height = i
                 break
         liquid_colour = image[y+h-(liquid_height//2)][x+(w//2)]
@@ -42,10 +49,11 @@ def getDigestateInfo(image, box, foam_bbox, no_foam):
         
         # get liquid height
         foam_edge = round(max(foam_bbox[3], foam_bbox[1]))
-        for i in range(h):
-            if canny[foam_edge+(i+1)][canny.shape[1]//2] == 255 and i>50:
-                liquid_height = i
-                break
+        # print(foam_edge)
+        # print(y)
+        # print(h)
+        # print(foam_edge)
+        liquid_height = y+h-foam_edge
         liquid_colour = image[foam_edge+(liquid_height//2)][x+(w//2)]
 
     ratio_liquid_to_flask = liquid_height/h
