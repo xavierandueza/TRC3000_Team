@@ -15,7 +15,7 @@ def getFoamFromModel(image):
         cfg = pickle.load(f)
 
     cfg.MODEL.WEIGHTS = os.path.join("foam_mask_rcnn/" + cfg.OUTPUT_DIR, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.2
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.4
     predictor = DefaultPredictor(cfg)
 
     outputs = predictor(image)

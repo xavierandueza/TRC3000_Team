@@ -19,10 +19,10 @@ def getDigestateInfo(image, box, foam_bbox, no_foam):
     # print(box)
 
     # plastic flask
-    # TRUE_FLASK_HEIGHT = 0.1421 #metres
+    TRUE_FLASK_HEIGHT = 0.1421 #metres
     
     # glass jar
-    TRUE_FLASK_HEIGHT = 0.135 #metres
+    # TRUE_FLASK_HEIGHT = 0.135 #metres
 
 
 
