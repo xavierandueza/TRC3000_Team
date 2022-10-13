@@ -1,0 +1,79 @@
+<html>
+
+<font size = "50px"><center><b> Welcome to Team 232 Demonstration<b></center></font>
+<?php
+	echo '<script type = "text/Javascript">';
+	echo 'alert("The weight of the load is being measured!!")';
+	echo '</script>'
+	#$output = shell_exec('PATH OF WEIGHT MEASUREMENT FILE');
+	#echo "The weight of the given sample is:  " "g";
+	
+	#if($output > 190 && $output<210)
+	#{
+		#shell_exec('PATH OF AN EMPTY SCRIPT TO TURN OFF THE LEAD CELL');
+		#$out_IMU = shell_exec('PATH OF IMU FILE');
+		#if("TILT/ACCEL/VEL is over the SOFT limit")
+		#{
+		#	echo '<script type = "text/Javascript">';
+		#	echo 'alert("Moving too quick. ASK USER TO PERFORM CERTAIN ACTION")';
+		#	echo '</script>'
+		#}
+		#else
+		#{
+		#	echo "ASK THE USER TO SET A ROTATIONAL ANGLE FOR THE SERVO";
+		#}
+	#}
+	#else
+	#{
+	#	if()
+	#}
+?>
+
+<input type = "submit" name="btn3" value="30" class="btn3">
+
+
+<?php
+if(isset($_POST['btn3']))
+{
+
+	$output = shell_exec('python /home/pi/Desktop/Servo_move/Servo_Schmoove.py');
+	echo $output;
+}
+elseif(isset($_POST['btn4']))
+{
+
+	$output = shell_exec('python /home/pi/Desktop/Servo_Schmoove.py');
+	echo $output;
+}
+elseif(isset($_POST['btn5']))
+{
+
+	$output = shell_exec('python /home/pi/Desktop/Servo_Schmoove.py');
+	echo $output;
+}
+elseif(isset($_POST['btn6']))
+{
+
+	$output = shell_exec('python /home/pi/Desktop/Servo_Schmoove.py');
+	echo $output;
+}
+elseif(isset($_POST['btn7']))
+{
+
+	$output = shell_exec('python /home/pi/Desktop/Servo_Schmoove.py');
+	echo $output;
+}
+elseif(isset($_POST['btn8']))
+{	
+	
+	
+	$output = shell_exec('python /home/pi/Desktop/Servo_Schmoove.py');
+	echo $output;
+}
+else
+{
+	echo"<br><h2>No angle selected!!!</h2>";
+	}
+?>
+
+</html>

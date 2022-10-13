@@ -1,0 +1,102 @@
+button{
+font-size: 30px;
+transition-duration: 0.4s;
+background-color: #242526;
+border: 2px solid #242526;
+border-radius: 6px;
+padding: 5px 100px 0 100px ;
+}
+button:hover{
+background-color: #3a3b3c;
+}
+p{
+font-size: 40px;
+color: #E4E6EB;
+font-weight: normal;
+font-family: 'Arial';
+
+}
+.button_text{
+font-size: 30px;
+color: #E4E6EB;
+}
+
+body{
+
+background-color: #18191A;
+}
+
+
+.header_text{
+font-size: 50px;
+font-weight: normal;
+font-family: 'Arial';
+color: #E4E6EB; 
+padding: 0 20px 0 20px;
+}
+.header_text2{
+font-size: medium;
+font-weight: bold;
+font-family: 'Courier New', Courier, monospace;
+color: rgb(0,255,255);
+}
+.header_text3{
+font-size: medium;
+font-weight: bold;
+font-family: 'Courier New', Courier, monospace;
+color: rgb(0,255,255);
+}
+.header_text4{
+font-size: medium;
+font-weight: bold;
+font-family: 'Courier New', Courier, monospace;
+color: rgb(0,255,255);
+}
+
+.container{
+display: flex;
+justify-content: space-around;
+}
+
+.top{
+	padding: 50px 0;
+	background-color: #242526;
+}
+.below_top{
+	padding: 25px 0;
+}
+.sec{
+	font-size: 40px;
+	color: #BOB3B8;
+}
+
+.warning{
+	font-size: 35px;
+	color: #7f0000;
+	padding: 0 20px 0 20px;
+}
+.separator{
+	background-color: #242526;
+	padding: 0 100px 0 100px;
+	height: 10px
+}
+.button_row{
+	padding: 10px 0 10px 0;
+}
+
+.colour{
+	font-size: 35px;
+	margin-left: 125px;
+}
+.cform{
+	font-size: 35px;	
+	font-weight: normal;
+	font-family: 'Arial';
+	color: #E4E6EB; 
+
+}
+
+input.largerCheckbox {
+	width: 30px;
+	height:30px;
+}
