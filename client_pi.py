@@ -1,7 +1,8 @@
 import os, socket, time, struct
 
-HOST = "192.168.246.239"
-HOST = "192.168.234.172"
+HOST = "192.168.246.239" # Ling home wifi
+HOST = "192.168.234.172" # Ling Hotspot
+HOST = "172.20.10.8"  # Kabir Hotspot
 PORT = 52212
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
