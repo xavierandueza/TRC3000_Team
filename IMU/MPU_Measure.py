@@ -106,17 +106,17 @@ while cv2.waitKey(100) != "q":
     Gy = 0.19 + gyro_y/131.0
     Gz = -0.19 + gyro_z/131.0
         
-        #avg_Ax[i] = Ax
-        #avg_Ay[i] = Ay
+        # avg_Ax[i] = Ax
+        # avg_Ay[i] = Ay
     
     
-    #avg_single_Ax = Average(avg_Ax);
-    #avg_single_Ay = Average(avg_Ay);
-    #angle_x = round(avg_single_Ax * 90, 4) # @90d Ax = 1... 1*x=90, x=90
-    #angle_y = round(avg_single_Ay * 91.4, 4) # @90d Ay=0.985... 0.985*y=90, y=91.4
+    avg_single_Ax = Average(avg_Ax);
+    avg_single_Ay = Average(avg_Ay);
+    angle_x = round(avg_single_Ax * 90, 4) # @90d Ax = 1... 1*x=90, x=90
+    angle_y = round(avg_single_Ay * 91.4, 4) # @90d Ay=0.985... 0.985*y=90, y=91.4
     
-    dt = time.time()-prev_time
-    prev_time = time.time()
+    # dt = time.time()-prev_time
+    # prev_time = time.time()
     
     # if abs(Ax) <0.05:
        # Ax = 0
@@ -125,9 +125,10 @@ while cv2.waitKey(100) != "q":
     # if abs(Ay) <0.05:
       #   Ay = 0
     
-    Vx += Ax *dt
-    Vy += Ay *dt
-    Vz += Az *dt
+    # Vx += Ax *dt
+    # Vy += Ay *dt
+    # Vz += Az *dt
+
     # print ("Gx=%.2f" %Gx, u'\u00b0'+ "/s", "\tGy=%.2f" %Gy, u'\u00b0'+ "/s", "\tGz=%.2f" %Gz, u'\u00b0'+ "/s", "\tAx=%.2f g" %Ax, "\tAy=%.2f g" %Ay, "\tAz=%.2f g" %Az)
     #sleep(0.1)
     # print ("\tTime=%.2f s" %t)
@@ -138,7 +139,7 @@ while cv2.waitKey(100) != "q":
     #print(str(round(angle_x)))
     print ("Current Gx=%.2f" %Gx, "\tCurrent Gy=%.2f" %Gy,"\tCurrent Gz=%.2f" %Gz)
     #print("avg_Ax=%.2f" %avg_single_Ax, "avg_Ay=%.2f" %avg_single_Ay)
-    #print ("angle_x=%.2f" %angle_x, "\tangle_y=%.2f" %angle_y)
+    print ("angle_x=%.2f" %angle_x, "\tangle_y=%.2f" %angle_y)
     print ("Current Ax=%.2f" %Ax, "\tCurrent Ay=%.2f" %Ay,"\tCurrent Az=%.2f" %Az)
     print ("Max Ax=%.2f" %Ax_max, "\t\tMax Ay=%.2f" %Ay_max,"\t\tMax Az=%.2f" %Az_max)
     # print("Vx=%.2f" %Vx, "\tVy=%.2f" %Vy,"\tVz=%.2f" %Vz)

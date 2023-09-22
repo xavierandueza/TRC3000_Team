@@ -18,14 +18,15 @@ import cv2
 
 
 def process_img(image=None):
-    # image = cv2.imread("foam_detection/images/clear.jpg")
-    # image = cv2.imread("foam_detection/images/fg1.jpg")
+
     if image is None:
-        image = cv2.imread("foam_detection/foaming_images/test2.jpg")
-    # image = cv2.imread("foam_detection/foaming_images/Yellowx3_foamx5.jpg")
-    scale = 720/max(image.shape[0],image.shape[1])
+        # image = cv2.imread("foam_detection/foaming_images/test2.jpg")
+        image = cv2.imread("foam_detection/foaming_images/Yellowx30_foamx5.jpg")
+        # image = cv2.imread("foam_detection/images/clear.jpg")
+        # image = cv2.imread("foam_detection/images/fg1.jpg")
+    scale = 768/max(image.shape[0],image.shape[1])
     image = rescaleFrame(image, scale)
-    # cv2.imshow("original_image", image)
+    cv2.imshow("original_image", image)
 
     #########################################################################################################
     # Removing the backgorund using AI method from rembg package
@@ -33,7 +34,7 @@ def process_img(image=None):
     flask_img = cv2.cvtColor(flask_img, cv2.COLOR_BGRA2BGR)
     # # Optional: Remove Glare
     # flask_img = removeGlare(flask_img, 210)
-    cv2.imshow("removed_background", flask_img)
+    # cv2.imshow("removed_background", flask_img)
     # foam - foam height - digestate - digestate height
     
     viz0000 = flask_img.copy()
@@ -136,10 +137,12 @@ def process_img(image=None):
                 string = "foam height: " + str(round(true_foam_height*1000,2))  + " mm"
                 cv2.putText(viz_list[i],string, (x, max(round(min(foam_bbox[1], foam_bbox[3]) -50), 25)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
                 # print(string)
-            # cv2.imshow("final_output", viz)
+        cv2.imshow("final_output", viz_list[-1])
 
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.imshow("colour", colour)
+    cv2.imshow("colour_f", colour_foam)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     return viz_list, viz_list_str, colour, colour_foam, digestate_info
 
 if __name__ == "__main__":
